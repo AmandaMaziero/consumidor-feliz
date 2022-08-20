@@ -10,7 +10,22 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Store.hasMany(models.StoreAddress, {
+        foreignKey: 'idstore',
+        as: 'StoreAddress'
+      })
+      Store.hasMany(models.StoreProduct, {
+        foreignKey: 'idstore',
+        as: 'StoreProduct'
+      })
+      Store.hasMany(models.Evaluation, {
+        foreignKey: 'idstore',
+        as: 'Evaluation'
+      })
+      Store.hasMany(models.Comment, {
+        foreignKey: 'idstore',
+        as: 'Comment'
+      })
     }
   }
   Store.init({
@@ -27,10 +42,12 @@ module.exports = (sequelize, DataTypes) => {
     telephone: DataTypes.STRING,
     cell: DataTypes.STRING,
     quality: DataTypes.FLOAT,
+    numberReview: DataTypes.INTEGER,
     status: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Store',
+    tableName: 'stores'
   });
   return Store;
 };

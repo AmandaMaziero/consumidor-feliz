@@ -46,7 +46,7 @@ module.exports = {
       },
       companySize: {
         allowNull: false,
-        type: Sequelize.INTEGER(INTEGER)
+        type: Sequelize.INTEGER
       },
       telephone: {
         allowNull: false,
@@ -58,6 +58,10 @@ module.exports = {
       },
       quality: {
         type: Sequelize.FLOAT
+      },
+      numberReview: {
+        defaultValue: 0,
+        type: Sequelize.INTEGER
       },
       status: {
         allowNull: false,
