@@ -69,6 +69,10 @@ module.exports = {
         comment: '0 - Inativo; 1 - Ativo;',
         type: Sequelize.INTEGER
       },
+      code: {
+        allowNull: true,
+        type: Sequelize.STRING(6)
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

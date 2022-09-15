@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       idstoreproduct: {
-        references: { model: 'storesProducts', key: 'id' },
+        references: { model: 'storeProducts', key: 'id' },
         foreignKey: true,
         type: Sequelize.INTEGER
       },

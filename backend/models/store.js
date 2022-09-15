@@ -43,7 +43,8 @@ module.exports = (sequelize, DataTypes) => {
     cell: DataTypes.STRING,
     quality: DataTypes.FLOAT,
     numberReview: DataTypes.INTEGER,
-    status: DataTypes.INTEGER
+    status: DataTypes.INTEGER,
+    code: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Store',

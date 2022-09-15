@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const db = require('./models')
+const port = process.env.PORT || 7000
 
 require ('dotenv').config()
 
@@ -16,7 +17,9 @@ app.get('/', (request, response) => {
     response.status(200).json({ message: "Servidor rodando" })
 })
 
-const port = process.env.PORT || 7000
+const authRoutes = require('./routes/auth.routes')
+app.use('/', authRoutes)
+
 
 const corsOptions = {
     origin: (origin, callback) => {
