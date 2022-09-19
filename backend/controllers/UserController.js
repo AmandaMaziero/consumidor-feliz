@@ -40,7 +40,7 @@ class UserController {
 
     static async register(request, response) {
         try {
-            const { name, email, password, confirmPassword, birthDate, cpf, cell, telephone, gender, type } = request.body
+            const { name, email, password, confirmPassword, birthDate, cpf, cell, telephone, gender, type, } = request.body
 
             if (!name || !email || !password || !confirmPassword || !birthDate || !cpf || !cell || !gender || !type)
                 return response.status(400).json({ message: 'Campos incompletos, verifique seu envio!' })
@@ -86,15 +86,15 @@ class UserController {
             if (!user) return response.status(404).json({ message: `Não foi encontrado usuário com id ${id}!` })
 
             const verifiyEmail = await db.User.findOne({ where: { email: email } })
-            if (verifiyEmail) return response.status(401).json({ message: 'Email já utilizado!' })
+            if (verifiyEmail && (id != verifiyEmail.id)) return response.status(401).json({ message: 'Email já utilizado!' })
 
             await user.update({
-                name,
-                email,
-                birthDate,
-                cell,
-                telephone,
-                gender
+                name: name ? name : user.name,
+                email: email ? email : user.email,
+                birthDate: birthDate ? birthDate : user.birthDate,
+                cell: cell ? cell : user.cell,
+                telephone: telephone ? telephone : user.telephone,
+                gender: gender ? gender : user.gender
             })
 
             return response.status(200).json({ message: 'Usuário atualizado com sucesso!', user })
@@ -132,7 +132,7 @@ class UserController {
             if (!user) return response.status(404).json({ message: `Não foi encontrado usuário com id ${id}!` })
 
             await user.update({
-                image: filename ? path + image.filename : user.image
+                image: path + image.filename
             })
             return response.status(200).json({ message: 'Usuário teve a foto de perfil atualizada com sucesso!' })
         } catch (error) {
@@ -169,6 +169,23 @@ class UserController {
 
     static async delete(request, response) {
         try {
+            const { id } = request.params
+
+            const user = await db.User.findOne({ where: { id: Number(id) }, include: { model: db.UserAddress, as: 'UserAddress', attributes: ['id'] } })
+            if (!user) return response.status(404).json({ message: `Não foi encontrado usuário com id ${id}!` })
+
+            const verifyEvaluation = await db.Evaluation.findAll({ where: { iduser: Number(id) } })
+            const verifyComment = await db.Comment.findAll({ where: { iduser: Number(id) } })
+
+            if (verifyEvaluation || verifyComment) {
+                return response.status(401).json({ message: 'Não foi possível deletar o usuário: há relações dentro do sistema!' })
+            } else {
+                const result = await db.sequelize.transaction(async t => {
+                    await user.UserAddress.destroy({ transaction: t })
+                    await user.destroy({ transaction: t })
+                })
+            }
+
             return response.status(200).json({ message: 'Usuário deletado com sucesso!' })
         } catch (error) {
             return response.status(500).json({ message: error.message })

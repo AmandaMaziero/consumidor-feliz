@@ -8,6 +8,10 @@ require ('dotenv').config()
 
 const app = express()
 
+// declare routes
+const authRoutes = require('./routes/auth.routes')
+const userRoutes = require('./routes/user.routes')
+
 app.use(cors())
 app.use(express.json())
 app.use('/assets', express.static(path.join(__dirname, './assets')))
@@ -16,10 +20,8 @@ app.use('/assets', express.static(path.join(__dirname, './assets')))
 app.get('/', (request, response) => {
     response.status(200).json({ message: "Servidor rodando" })
 })
-
-const authRoutes = require('./routes/auth.routes')
 app.use('/', authRoutes)
-
+app.use('/users', userRoutes)
 
 const corsOptions = {
     origin: (origin, callback) => {
@@ -38,8 +40,8 @@ app.use(cors());
 app.listen(port, async() => {
     try {
         await db.sequelize.authenticate()
-        console.log('Sucesso na conexão');
-        console.log(`Rodando na porta ${port}`)
+        console.log('Sucesso na conexão!');
+        console.log(`Rodando na porta ${port} :)`)
     } catch (error) {
         console.log(`Error: ${error.message}`);
     }
